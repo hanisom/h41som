@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 public class ComplaintController {
 
-    private Complaint complaintInterface;
+    private ComplaintRepository complaintRepository;
 
     @PostMapping
     public ResponseEntity createComplaint(@RequestBody ComplaintDTO complaint) {
@@ -33,8 +33,8 @@ public class ComplaintController {
                 log.error("The userId: {} doesn't exist in the systme,Cannot open complaint for this userId", userId);
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
             }
-            complaintInterface.openComplaint(complaint);
-            return ResponseEntity.status((HttpStatus.OK)).build();
+            UUID complaintId = complaintRepository.openComplaint(complaint);
+            return ResponseEntity.status((HttpStatus.OK)).body(complaintId);
         } catch (Exception e) {
             log.error("Failed to open complaint with error ", e);
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
@@ -45,7 +45,7 @@ public class ComplaintController {
     public ResponseEntity getComplaint(@PathParam("id") UUID complaintId) {
         try {
             log.info("Getting complaint details for complaint id: {}", complaintId);
-            Optional<ComplaintDTO> complaintDetails = complaintInterface.getComplaintDetails(complaintId);
+            Optional<ComplaintDTO> complaintDetails = complaintRepository.getComplaintDetails(complaintId);
             if(complaintDetails.isEmpty()){
                 log.error("Could not find complaint with this id: {}", complaintId);
                 return ResponseEntity.status(NOT_FOUND).build();

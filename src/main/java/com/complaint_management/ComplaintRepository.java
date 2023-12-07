@@ -1,8 +1,13 @@
-//package com.complaint;
-//
-//import org.springframework.stereotype.Repository;
-//
-//@Repository
-//public interface ComplaintRepository extends JpaRepository<ComplaintDTO, Integer> {
-//}
+package com.complaint_management;
+
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface ComplaintRepository  {
+    Optional<ComplaintDTO> getComplaintDetails(UUID complaintId);
+    UUID openComplaint(ComplaintDTO complaint);
+}
 
